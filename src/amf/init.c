@@ -19,6 +19,7 @@
 
 #include "sbi-path.h"
 #include "ngap-path.h"
+#include "metrics.h"
 
 static ogs_thread_t *thread;
 static void amf_main(void *data);
@@ -31,8 +32,12 @@ int amf_initialize()
     amf_context_init();
     amf_event_init();
     ogs_sbi_context_init();
+    ogs_metrics_context_init();
 
     rv = ogs_sbi_context_parse_config("amf", "nrf");
+    if (rv != OGS_OK) return rv;
+
+    rv = ogs_metrics_context_parse_config();
     if (rv != OGS_OK) return rv;
 
     rv = amf_context_parse_config();
@@ -49,6 +54,9 @@ int amf_initialize()
     if (rv != OGS_OK) return rv;
 
     rv = ngap_open();
+    if (rv != OGS_OK) return rv;
+
+    rv = metrics_open();
     if (rv != OGS_OK) return rv;
 
     thread = ogs_thread_create(amf_main, NULL);
@@ -91,9 +99,12 @@ void amf_terminate(void)
 
     ngap_close();
     amf_sbi_close();
+    ogs_metrics_close();
+    ogs_metrics_deinit();
 
     amf_context_final();
     ogs_sbi_context_final();
+    ogs_metrics_context_final();
 
     amf_event_final(); /* Destroy event */
 }
