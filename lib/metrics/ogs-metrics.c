@@ -52,11 +52,11 @@ static char *export_metrics(char *resp, ogs_list_t *metrics)
             {
                 int cnt = 0;
                 ogs_metrics_label_t *label;
+                resp = ogs_mstrcatf(resp, "%s{",metric->name);
 
                 ogs_list_for_each(&label_list->labels, label)
                 {
-                    resp = ogs_mstrcatf(resp, "%s%s%s=\"%s\"",
-                        (cnt == 0) ? metric->name : "",
+                    resp = ogs_mstrcatf(resp, "%s%s=\"%s\"",
                         (cnt > 0) ? "," : "",
                         label->label_name, label->label_value);
 
