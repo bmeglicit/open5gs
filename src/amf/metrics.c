@@ -67,11 +67,17 @@ int metrics_open(void)
     ogs_metrics_gauge_set(sample1, 0);
 
     gauge_gnb_cnt = ogs_metrics_create(OGS_METRICS_TYPE_GAUGE,
-            "amf_gnb_cnt", "Count of gNB's connected", 0, NULL);
+        "amf_gnb_cnt", "Count of gNB's connected", 
+        1, (const char * [][2]){
+        {"amf_name", amf_self()->amf_name }
+        });
     ogs_assert(gauge_gnb_cnt);
 
     gauge_ran_ue_cnt = ogs_metrics_create(OGS_METRICS_TYPE_GAUGE,
-            "amf_ran_ue_cnt", "Count of RAN UE's", 0, NULL);
+            "amf_ran_ue_cnt", "Count of RAN UE's",
+        1, (const char * [][2]){
+        {"amf_name", amf_self()->amf_name }
+        });
     ogs_assert(gauge_ran_ue_cnt);
 
 
